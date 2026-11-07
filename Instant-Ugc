@@ -1,0 +1,119 @@
+‎local ReplicatedStorage = game:GetService("ReplicatedStorage")
+‎local Players = game:GetService("Players")
+‎local UserInputService = game:GetService("UserInputService")
+‎
+‎local Player = Players.LocalPlayer
+‎local Event = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("TheTHING")
+‎
+‎-- HAPUS UI SEBELUMNYA
+‎local CoreGui = game:GetService("CoreGui")
+‎
+‎pcall(function()
+‎    CoreGui:FindFirstChild("Sheshh HUB"):Destroy()
+‎end)
+‎
+‎pcall(function()
+‎    Player.PlayerGui:FindFirstChild("Sheshh Hub"):Destroy()
+‎end)
+‎
+‎local Enabled = false
+‎
+‎-- UI
+‎local ScreenGui = Instance.new("ScreenGui")
+‎ScreenGui.Name = "Sheshh Hub"
+‎ScreenGui.ResetOnSpawn = false
+‎ScreenGui.Parent = CoreGui
+‎
+‎local Frame = Instance.new("Frame")
+‎Frame.Size = UDim2.new(0, 190, 0, 100)
+‎Frame.Position = UDim2.new(0.5, -95, 0.5, -50)
+‎Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+‎Frame.BorderSizePixel = 0
+‎Frame.Active = true
+‎Frame.Parent = ScreenGui
+‎
+‎Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
+‎
+‎-- TITLE
+‎local Title = Instance.new("TextLabel")
+‎Title.Size = UDim2.new(1, 0, 0, 30)
+‎Title.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+‎Title.Text = "Sheshh Hub"
+‎Title.TextColor3 = Color3.new(1, 1, 1)
+‎Title.TextSize = 16
+‎Title.Font = Enum.Font.GothamBold
+‎Title.Parent = Frame
+‎
+‎Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 8)
+‎
+‎-- BUTTON
+‎local Button = Instance.new("TextButton")
+‎Button.Size = UDim2.new(1, -20, 0, 35)
+‎Button.Position = UDim2.new(0, 10, 0, 38)
+‎Button.BackgroundColor3 = Color3.fromRGB(170, 45, 45)
+‎Button.Text = "AUTO THETHING : OFF"
+‎Button.TextColor3 = Color3.new(1, 1, 1)
+‎Button.TextSize = 13
+‎Button.Font = Enum.Font.GothamBold
+‎Button.Parent = Frame
+‎
+‎Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
+‎
+‎-- DRAG UI
+‎local Dragging = false
+‎local DragStart
+‎local StartPosition
+‎
+‎Title.InputBegan:Connect(function(input)
+‎    if input.UserInputType == Enum.UserInputType.MouseButton1
+‎    or input.UserInputType == Enum.UserInputType.Touch then
+‎
+‎        Dragging = true
+‎        DragStart = input.Position
+‎        StartPosition = Frame.Position
+‎
+‎        input.Changed:Connect(function()
+‎            if input.UserInputState == Enum.UserInputState.End then
+‎                Dragging = false
+‎            end
+‎        end)
+‎    end
+‎end)
+‎
+‎UserInputService.InputChanged:Connect(function(input)
+‎    if Dragging and (
+‎        input.UserInputType == Enum.UserInputType.MouseMovement
+‎        or input.UserInputType == Enum.UserInputType.Touch
+‎    ) then
+‎
+‎        local Delta = input.Position - DragStart
+‎
+‎        Frame.Position = UDim2.new(
+‎            StartPosition.X.Scale,
+‎            StartPosition.X.Offset + Delta.X,
+‎            StartPosition.Y.Scale,
+‎            StartPosition.Y.Offset + Delta.Y
+‎        )
+‎    end
+‎end)
+‎
+‎-- AUTO THETHING
+‎Button.MouseButton1Click:Connect(function()
+‎    Enabled = not Enabled
+‎
+‎    if Enabled then
+‎        Button.Text = "AUTO THETHING : ON"
+‎        Button.BackgroundColor3 = Color3.fromRGB(35, 160, 75)
+‎
+‎        task.spawn(function()
+‎            while Enabled do
+‎                Event:FireServer("1")
+‎                task.wait()
+‎            end
+‎        end)
+‎    else
+‎        Button.Text = "AUTO THETHING : OFF"
+‎        Button.BackgroundColor3 = Color3.fromRGB(170, 45, 45)
+‎    end
+‎end)
+‎
